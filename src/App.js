@@ -2,7 +2,17 @@
 
 import React, { useEffect } from "react";
 import Amplify, { Auth, Hub } from 'aws-amplify'
-import {Authenticator, Image, Text, ThemeProvider, useTheme, View} from '@aws-amplify/ui-react';
+import {
+    Authenticator,
+    Image,
+    Text,
+    ThemeProvider,
+    useTheme,
+    View,
+    defaultDarkModeOverride,
+    Theme
+} from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
 import { BrowserRouter as Router, Routes, Route, Link} from "react-router-dom";
 import { Button} from 'react-bootstrap';
 
@@ -14,7 +24,7 @@ var components = {
             <View textAlign="center" padding={tokens.space.large}>
                 <Image
                     alt="logo"
-                    src="./public/logo192.png"
+                    src="./logo192.png"
                 />
             </View>
         );
@@ -50,78 +60,25 @@ Amplify.configure({
 });
 
 export default function App() {
-  return (
-      <Authenticator components={components}>
-      <Router>
-        <div>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/dashboard">Dashboard</Link>
-              </li>
-            </ul>
-          </nav>
+    useEffect( ()=>{
+        document.body.style.background = '#282c34'
+    });
 
-          <Routes>
-            <Route path="/login" element={<Login/>}>
-            </Route>
-            <Route path="/dashboard" element={<Dashboard />}>
-            </Route>
-            <Route path="/" element={<Home />}>
-            </Route>
-          </Routes>
-        </div>
-      </Router>
+    const [colorMode, setColorMode] = React.useState('system');
+    const theme = {
+        name: 'my-theme',
+        overrides: [defaultDarkModeOverride],
+    };
+  return (
+      <ThemeProvider theme={theme} colorMode={colorMode}>
+      <Authenticator components={components} hideSignUp={true}>
+          {({ signOut, user}) => (
+              <main>
+                  <h1>Hello {user.username}</h1>
+                  <button onClick={signOut}>Sign out</button>
+              </main>
+          )}
       </Authenticator>
+      </ThemeProvider>
   );
-}
-function cog_auth() {
-    return true
-}
-
-function Home() {
-  return <h2>Home</h2>;
-}
-
-function Login() {
-    useEffect(() => {
-        Hub.listen('auth', ({ payload: { event, data } }) => {
-            switch (event) {
-                case 'signIn':
-                case 'cognitoHostedUI':
-                    console.log('Authenticated...');
-                    console.log(event);
-                    break;
-                case 'signIn_failure':
-                case 'cognitoHostedUI_failure':
-                    console.log('Error', data);
-                    break;
-            }
-        });
-    }, []);
-
-
-
-  return (
-      <div className="app flex-row align-items-center">
-            <Button color="primary" className="px-4"
-                    onClick={() => Auth.federatedSignIn()}>
-            Login
-            </Button>
-      </div>
-  );
-}
-
-function Dashboard() {
-    return (
-        <div>
-          <h2>Dashboard</h2>
-        </div>
-    );
 }

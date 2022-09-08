@@ -13,8 +13,8 @@ var components = {
         return (
             <View textAlign="center" padding={tokens.space.large}>
                 <Image
-                    alt="Biolexis logo"
-                    src="./public/biolexis_logo.png"
+                    alt="logo"
+                    src="./public/logo192.png"
                 />
             </View>
         );

@@ -1,7 +1,7 @@
 // src/App.js
 
 import React, { useEffect } from "react";
-import Amplify, { Auth, Hub } from 'aws-amplify'
+import Amplify from 'aws-amplify'
 import {
     Authenticator,
     Image,
@@ -9,12 +9,9 @@ import {
     ThemeProvider,
     useTheme,
     View,
-    defaultDarkModeOverride,
-    Theme
+    defaultDarkModeOverride
 } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-import { BrowserRouter as Router, Routes, Route, Link} from "react-router-dom";
-import { Button} from 'react-bootstrap';
 
 var components = {
     Header() {
@@ -64,7 +61,7 @@ export default function App() {
         document.body.style.background = '#282c34'
     });
 
-    const [colorMode, setColorMode] = React.useState('system');
+    const [colorMode, _] = React.useState('system');
     const theme = {
         name: 'my-theme',
         overrides: [defaultDarkModeOverride],
